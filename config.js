@@ -8,7 +8,7 @@ module.exports = {
 			pass: 'nguyenthanhtuanmkn'
 		}
 	},
-	dbConnstring:'mongodb://127.0.0.1:27017/codeshare',
+	dbConnstring:'mongodb://admin:code4share@ds129484.mlab.com:29484/code4share',
 	sessionKey:'HaloCode4Share'
 
 }
