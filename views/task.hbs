@@ -59,7 +59,7 @@
 
 <script src="/plugins/ot/ot.js"></script>
 <script src="/socket.io/socket.io.js"></script>
-<script src="/plugins/lib/peer.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/peerjs/0.3.18/peer.js"></script>
 
 <script>
   var EditorClient = ot.EditorClient;
@@ -120,13 +120,13 @@
   // Compatibility shim
   navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
     // PeerJS object
-    var peer = new Peer(username + roomId, {key: 's0xuhlvq9g2satt9',host:'code4share2.herokuapp.com', secure:true, port:80});
+    var peer = new Peer(username + roomId, {key: 's0xuhlvq9g2satt9',host:'code4share2.herokuapp.com',port:3000 });
 
     peer.on('open', function(){
       $('#my-id').text(peer.id);
     });
 
-    // Receiving a call
+    // Receiving a <call></call>
     peer.on('call', function(call){
       // Answer the call automatically (instead of prompting user) for demo purposes
       call.answer(window.localStream);
