@@ -66,7 +66,7 @@
   var SocketIOAdapter = ot.SocketIOAdapter;
   var CodeMirrorAdapter = ot.CodeMirrorAdapter;
 
-  var socket = io.connect('https://code4share2.herokuapp.com:3000');
+  var socket = io.connect('code4share2.herokuapp.com:3000');
   var editor = CodeMirror.fromTextArea(document.getElementById("code-screen"), {
     lineNumbers: true,
     theme: "monokai"
@@ -120,7 +120,7 @@
   // Compatibility shim
   navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
     // PeerJS object
-    var peer = new Peer(username + roomId, {key: 's0xuhlvq9g2satt9'});
+    var peer = new Peer(username + roomId, {key: 's0xuhlvq9g2satt9',host:'code4share2.herokuapp.com', secure:true, port:443});
 
     peer.on('open', function(){
       $('#my-id').text(peer.id);
