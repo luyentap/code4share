@@ -33,7 +33,7 @@ router.route('/contact')
 	}else{
 		var mailOptions = {
 			from: 'Code4Share <no-reply@code4share.com>',
-			to: 'Code4Share <no-reply@code4share.com>',
+			to: 'tuandnd241@gmail.com',
 			subject: 'You get a new message from visitor 😘 😘 ',
 			text: req.body.message
 
