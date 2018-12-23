@@ -1,7 +1,24 @@
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 <div>
   <div class="row">
     <div class="col-md-8">
+      <select class="form-control" id="language-code">
+        <option value="php">php</option>
+        <option value="python3">Python 3	</option>
+        <option value="python2">Python 2</option>
+        <option value="ruby">Ruby</option>
+        <option value="go">GO Lang</option>
+        <option value="scala">Scala</option>
+        <option value="sql">SQL</option>
+        <option value="cpp">C++</option>
+        <option value="lua">Lua</option>
+        <option value="dart">Dart</option>
+        <option value="nodejs">Nodejs</option>
+      </select>
       <textarea id="code-screen">{{content}}</textarea>
+      
+      <button onclick="submitCode();">submitCode</button>
+      <p id="result-submit" style="border:solid 1px;color:red"></p>
     </div>
     <div class="col-md-4" id="chatbox">
       <div class="panel panel-primary">
@@ -66,7 +83,7 @@
   var SocketIOAdapter = ot.SocketIOAdapter;
   var CodeMirrorAdapter = ot.CodeMirrorAdapter;
 
-  var socket = io.connect('code4share2.herokuapp.com');
+  var socket = io.connect('code4share-gaga2017.c9users.io');
   var editor = CodeMirror.fromTextArea(document.getElementById("code-screen"), {
     lineNumbers: true,
     theme: "monokai"
@@ -184,4 +201,66 @@
       $('#step3').show();
     }
 
+
+  function submitCode(){
+    //get the screen code 
+    var screenCode = document.getElementsByClassName(" CodeMirror-line ");
+    var code ="";
+   for(var i=0;i<screenCode.length;i++){
+     code = code+ screenCode[i].innerText+"\n";
+   }
+ console.log(code);
+ 
+ //get the languge you choose
+ var language = document.getElementById("language-code");
+ var language_choose = language.options[language.selectedIndex].value;
+  console.log(language_choose)
+ 
+axios.post('https://api.jdoodle.com/v1/execute/', {
+//   headers: {
+// 	  'Access-Control-Allow-Origin': '*',
+// 	   'Accept': 'application/json',
+//     'Content-Type': 'application/json',
+// 	},
+	
+  "clientId": "b540e49e52dd53095ae926aecd9ffda0","clientSecret":"19a95448b1b116e933bc1270382c2d8334f439cc77a2c00673bc6bd9159c6362","script":`${code}`,"language":`${language_choose}`,"versionIndex":"0"
+  })
+  .then(function (response) {
+    // console.log(JSON.stringify(response));
+    const result = response.data.output;
+    console.log(result);
+    
+    document.getElementById("result-submit").innerText = ` complied : \n     ${result}`;
+  })
+  .catch(function (error) {
+    console.log(error);
+  });
+  
+  
+  
+  
+// var somejson ={"clientId": "b540e49e52dd53095ae926aecd9ffda0","clientSecret":"19a95448b1b116e933bc1270382c2d8334f439cc77a2c00673bc6bd9159c6362","script":`${code}`,"language":"javascript","versionIndex":"0"};
+// $.ajax({
+//             url: "https://api.jdoodle.com/v1/execute",
+//             type: "POST",
+//             crossDomain: true,
+//             headers: {
+// 	  'Access-Control-Allow-Origin': '*',
+// 	   'Accept': 'application/json',
+//     'Content-Type': 'application/json',
+// 	},
+//             data: JSON.stringify(somejson),
+//             dataType: "json",
+//             success: function (response) {
+//                 var resp = JSON.parse(response)
+//                 alert(resp.status);
+//             },
+//             error: function (xhr, status) {
+//                 alert("error");
+//             }
+//         });
+
+
+    
+  }
   </script>
