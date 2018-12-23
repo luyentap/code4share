@@ -1,7 +1,24 @@
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 <div>
   <div class="row">
     <div class="col-md-8">
+      <select class="form-control" id="language-code">
+        <option value="php">php</option>
+        <option value="python3">Python 3	</option>
+        <option value="python2">Python 2</option>
+        <option value="ruby">Ruby</option>
+        <option value="go">GO Lang</option>
+        <option value="scala">Scala</option>
+        <option value="sql">SQL</option>
+        <option value="cpp">C++</option>
+        <option value="lua">Lua</option>
+        <option value="dart">Dart</option>
+        <option value="nodejs">Nodejs</option>
+      </select>
       <textarea id="code-screen">{{content}}</textarea>
+      
+      <button onclick="submitCode();">submitCode</button>
+      <p id="result-submit" style="border:solid 1px;color:red"></p>
     </div>
     <div class="col-md-4" id="chatbox">
       <div class="panel panel-primary">
@@ -59,14 +76,14 @@
 
 <script src="/plugins/ot/ot.js"></script>
 <script src="/socket.io/socket.io.js"></script>
-<script src="/plugins/lib/peer.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/peerjs/0.3.18/peer.js"></script>
 
 <script>
   var EditorClient = ot.EditorClient;
   var SocketIOAdapter = ot.SocketIOAdapter;
   var CodeMirrorAdapter = ot.CodeMirrorAdapter;
 
-  var socket = io.connect('code4share2.herokuapp.com');
+  var socket = io.connect('https://code4share2.herokuapp.com');
   var editor = CodeMirror.fromTextArea(document.getElementById("code-screen"), {
     lineNumbers: true,
     theme: "monokai"
@@ -122,11 +139,12 @@
     // PeerJS object
     var peer = new Peer(username + roomId, {key: 's0xuhlvq9g2satt9',host:'code4share2.herokuapp.com', secure:false, port:443  });
 
+
     peer.on('open', function(){
       $('#my-id').text(peer.id);
     });
 
-    // Receiving a call
+    // Receiving a <call></call>
     peer.on('call', function(call){
       // Answer the call automatically (instead of prompting user) for demo purposes
       call.answer(window.localStream);
@@ -184,4 +202,66 @@
       $('#step3').show();
     }
 
+
+  function submitCode(){
+    //get the screen code 
+    var screenCode = document.getElementsByClassName(" CodeMirror-line ");
+    var code ="";
+   for(var i=0;i<screenCode.length;i++){
+     code = code+ screenCode[i].innerText+"\n";
+   }
+ console.log(code);
+ 
+ //get the languge you choose
+ var language = document.getElementById("language-code");
+ var language_choose = language.options[language.selectedIndex].value;
+  console.log(language_choose)
+ 
+axios.post('https://api.jdoodle.com/v1/execute/', {
+//   headers: {
+// 	  'Access-Control-Allow-Origin': '*',
+// 	   'Accept': 'application/json',
+//     'Content-Type': 'application/json',
+// 	},
+	
+  "clientId": "b540e49e52dd53095ae926aecd9ffda0","clientSecret":"19a95448b1b116e933bc1270382c2d8334f439cc77a2c00673bc6bd9159c6362","script":`${code}`,"language":`${language_choose}`,"versionIndex":"0"
+  })
+  .then(function (response) {
+    // console.log(JSON.stringify(response));
+    const result = response.data.output;
+    console.log(result);
+    
+    document.getElementById("result-submit").innerText = ` complied : \n     ${result}`;
+  })
+  .catch(function (error) {
+    console.log(error);
+  });
+  
+  
+  
+  
+// var somejson ={"clientId": "b540e49e52dd53095ae926aecd9ffda0","clientSecret":"19a95448b1b116e933bc1270382c2d8334f439cc77a2c00673bc6bd9159c6362","script":`${code}`,"language":"javascript","versionIndex":"0"};
+// $.ajax({
+//             url: "https://api.jdoodle.com/v1/execute",
+//             type: "POST",
+//             crossDomain: true,
+//             headers: {
+// 	  'Access-Control-Allow-Origin': '*',
+// 	   'Accept': 'application/json',
+//     'Content-Type': 'application/json',
+// 	},
+//             data: JSON.stringify(somejson),
+//             dataType: "json",
+//             success: function (response) {
+//                 var resp = JSON.parse(response)
+//                 alert(resp.status);
+//             },
+//             error: function (xhr, status) {
+//                 alert("error");
+//             }
+//         });
+
+
+    
+  }
   </script>
